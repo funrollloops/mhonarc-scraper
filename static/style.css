@@ -71,6 +71,8 @@ h2 {
   border: solid 1px black;
   border-radius: 5px;
   clear: both;
+  max-width: 80ex;
+  margin: 0.5em auto;
 }
 
 .message .sender {

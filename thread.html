@@ -11,7 +11,7 @@
 {% for message in messages %}
 <div class="message">
   <div class="sender"> {{ message.sender }} </div>
-  <div class="to"> {{ message.to }} </div>
+  <div class="to"> {{ message.to|join:", " }} </div>
   <div class="content_type"> {{ message.content_type }} </div>
   <div class="body"> {{ message.body }} </div>
 </div>
