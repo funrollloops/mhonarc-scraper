@@ -1,17 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>{{ list_url }}</title>
+<title>{{ list.list_url }}</title>
 <link rel="stylesheet" type="text/css" href="/static/style.css" />
 </head>
 <body>
-<h1>{{ list_url }}</h1>
+<h1>{{ list.list_url }}</h1>
+{% if msg %}<div class='info'>{{msg}}</div>{% endif %}
 <table class="threads">
 {% for thread in threads %}
 <tr>
 <td class="participants">{{ thread.participants.0 }}</td>
 <td class="detail">
-  <a href="/thread?thread={{thread.thread_id|urlencode}}">
+  <a href="/thread/show?thread={{thread.thread_id|urlencode}}">
     <span class="subject">{{ thread.subject }}</span>
     <span class="body">{{ thread.last_message_body}}</span>
   </a>
@@ -20,5 +21,6 @@
 </tr>
 {% endfor %}
 </table>
+<div class='footer'>Last updated on {{ list.last_fetched_time }} GMT.  {{ list.num_fetched_msg }} message in total. <a href="/list/update?list={{list.list_url|urlencode}}">Update now</a>.</div>
 </body>
 </html>
