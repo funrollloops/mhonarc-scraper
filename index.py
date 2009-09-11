@@ -142,6 +142,11 @@ class CreateList(webapp.RequestHandler):
 
     if list is not None:
       render(self, 'error.html', msg = 'That list already exists!')
+      return
+
+    if not list_url:
+      render(self, 'error.html', msg = 'No url given.')
+      return
 
     list = List(list_url = list_url, num_fetched_msg = 0,
                 last_fetched_time = datetime.now())
