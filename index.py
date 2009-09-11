@@ -126,14 +126,9 @@ class ShowList(webapp.RequestHandler):
                      order('-last_message_time')
     formatted_threads = []
     for t in threads:
-      def format_participant(p):
-        ps = p.split()
-        if len(ps) > 1:
-          return ps[0] + " " + ps[1][0]
-        else:
-          return ps[0]
-
-      t.participants = [', '.join(map(format_participant, t.participants))]
+      if len(t.participants) > 3:
+        t.participants = [t.participants[:1], '...'] + t.participants[-2:]
+      t.participants = [', '.join(p.split()[0] for p in  t.participants)]
       t.subject = strip_tags(t.subject)
       t.last_message_body = strip_tags(t.last_message_body)[:100]
       one_day = timedelta(days=1)
