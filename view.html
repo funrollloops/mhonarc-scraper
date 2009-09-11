@@ -21,6 +21,6 @@
 </tr>
 {% endfor %}
 </table>
-<div class='footer'>Last updated on {{ list.last_fetched_time }} GMT.  {{ list.num_fetched_msg }} message in total. <a href="/list/update?list={{list.list_url|urlencode}}">Update now</a>.</div>
+<div class='footer'>Last updated {{ list.last_fetched_time|timesince }} ago.  {{ list.num_fetched_msg }} message in total. <a href="/list/update?list={{list.list_url|urlencode}}">Update now</a>.</div>
 </body>
 </html>

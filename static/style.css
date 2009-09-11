@@ -38,6 +38,11 @@ h2 {
 .threads td {
   white-space: nowrap;
   overflow: hidden;
+  padding-left: 1ex;
+}
+
+.threads td:first-child {
+  padding-left: 0;
 }
 
 .threads .participants {
