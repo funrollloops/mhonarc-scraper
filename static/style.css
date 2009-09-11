@@ -1,3 +1,7 @@
+body {
+  font-family: "calibri" "helvetica" "verdana" sans-serif;
+  font-weight: thin;
+}
 
 h1 {
   font-size: 150%;
@@ -92,4 +96,11 @@ h2 {
 
 .message .content_type {
   color: #CCCCFF;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 1em;
+  font-size: 90%;
+  font-color: gray;
 }
