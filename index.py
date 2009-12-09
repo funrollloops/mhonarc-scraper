@@ -172,9 +172,13 @@ class CreateList(webapp.RequestHandler):
 class UpdateList(webapp.RequestHandler):
   def do(self):
     list = gql_limit1(List, list_url = self.request.get('list'))
+    try:
+      n = int(self.request.get('n', 1))
+    except:
+      n = 1
     if not list:
       render(self, 'error.html', msg='unknown list')
-    elif update_list(list, list.num_fetched_msg, limit = 1) == 1:
+    elif update_list(list, list.num_fetched_msg, limit = n) == 1:
       render(self, 'info.html', msg='one message added, update scheduled')
       schedule_list_update(list)
     else:
