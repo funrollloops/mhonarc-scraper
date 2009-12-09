@@ -3,6 +3,7 @@
 <head>
   <title>{% block title %}MHonarc Scraper{% endblock title %}</title>
   <link rel="stylesheet" type="text/css" href="/static/style.css" />
+  <script src="http://www.google.com/jsapi"></script>
 </head>
 <body>
 <div class="nav">
@@ -23,8 +24,9 @@
 {% if error_message %}<div class='error'>{{error_message}}</div>{% endif %}
 
 {% block content %}
-<a href="/">Go back home.</a>
+<a href="javascript:history.go(-1)">Go back.</a>
 {% endblock content %}
 
+<script>{% block script %}{% endblock script %}</script>
 </body>
 </html>

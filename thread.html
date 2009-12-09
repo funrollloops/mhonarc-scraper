@@ -22,3 +22,27 @@
 {% endfor %}
 </div>
 {% endblock content %}
+
+{% block script %}
+google.load("jquery", "1");
+
+function toggleCollapsed() {
+  // Don't permit toggling if this is the last child.
+  $(this).parents(".message:not(:last-child)").each(function(i, msg) {
+    $(msg).toggleClass('collapsed');
+  });
+}
+
+function addCollapseToggle() {
+ $(".sender").each(function(i, msg) {
+    $(msg).click(toggleCollapsed);
+ });
+ $(".to").each(function(i, msg) {
+    $(msg).onclick = (toggleCollapsed);
+ });
+}
+
+google.setOnLoadCallback(function() {
+  $(document).ready(addCollapseToggle);
+});
+{% endblock script %}
