@@ -1,8 +1,6 @@
-<html>
-<head>
-<title>{{ list_url }}</title>
-</head>
-<body>
-<div class="error">{{msg}}</div>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Info - {{block.super}}{% endblock %}
+{% block content %}
+<div class="info">{{msg}}</div>
+{% endblock %}

@@ -1,20 +1,17 @@
-<html>
-<head>
-<title>MHonArc Scraper</title>
-<link rel="stylesheet" type="text/css" href="/static/style.css" />
-</head>
-<body>
-<h1>Lists</h1>
+{% extends "base.html" %}
+
+{% block header %}Lists{% endblock %}
+
+{% block content %}
 <ol class="lists">
   <li><form action="/list/create" method="post">
     <input type="text" name="list" />
     <input type="submit" value="Add New List" />
   </form></li>
-{% for list in lists %}
+  {% for list in lists %}
   <li><a href="/list/show?list={{list.list_url|urlencode}}">
     {{list.list_url|escape}}
   </a></li>
-{% endfor %}
+  {% endfor %}
 </ol>
-</body>
-</html>
+{% endblock content %}

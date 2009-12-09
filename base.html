@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>{% block title %}MHonarc Scraper{% endblock title %}</title>
+  <link rel="stylesheet" type="text/css" href="/static/style.css" />
+</head>
+<body>
+<h1>{% block header %}MHonarc Scraper{% endblock header %}</h1>
+
+{% if message %}<div class='info'>{{message}}</div>{% endif %}
+{% if error_message %}<div class='error'>{{error_message}}</div>{% endif %}
+
+{% block content %}
+<a href="/">Go back home.</a>
+{% endblock content %}
+
+</body>
+</html>

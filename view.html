@@ -1,26 +1,30 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>{{ list.list_url }}</title>
-<link rel="stylesheet" type="text/css" href="/static/style.css" />
-</head>
-<body>
-<h1>{{ list.list_url }}</h1>
-{% if msg %}<div class='info'>{{msg}}</div>{% endif %}
+{% extends "base.html" %}
+{% block title %}
+  {{ list.list_url }}
+{% endblock title %}
+
+{% block header %}
+  {{ list.list_url }}
+{% endblock header %}
+
+{% block content %}
 <table class="threads">
-{% for thread in threads %}
-<tr>
-<td class="participants">{{ thread.participants.0 }}</td>
-<td class="detail">
-  <a href="/thread/show?thread={{thread.thread_id|urlencode}}">
-    <span class="subject">{{ thread.subject }}</span>
-    <span class="body">{{ thread.last_message_body}}</span>
-  </a>
-</td>
-<td class="time">{{ thread.short_date }}</td>
-</tr>
-{% endfor %}
+  {% for thread in threads %}
+  <tr>
+    <td class="participants">{{ thread.participants.0 }}</td>
+    <td class="detail">
+      <a href="/thread/show?thread={{thread.thread_id|urlencode}}">
+        <span class="subject">{{ thread.subject }}</span>
+        <span class="body">{{ thread.last_message_body}}</span>
+      </a>
+    </td>
+    <td class="time">{{ thread.short_date }}</td>
+  </tr>
+  {% endfor %}
 </table>
-<div class='footer'>Last updated {{ list.last_fetched_time|timesince }} ago.  {{ list.num_fetched_msg }} message in total. <a href="/list/update?list={{list.list_url|urlencode}}">Update now</a>.</div>
-</body>
-</html>
+<div class='footer'>
+  Last updated {{ list.last_fetched_time|timesince }} ago.
+  {{ list.num_fetched_msg }} message in total.
+  <a href="/list/update?list={{list.list_url|urlencode}}">Update now</a>.
+</div>
+{% endblock content %}

@@ -1,13 +1,14 @@
-<html>
-<head>
-<title>{{ list_url }}</title>
-<link rel="stylesheet" type="text/css" href="/static/style.css" />
-</head>
-<body>
-<h1><a href="/list/show?list={{thread.list_url|urlencode}}">
+{% extends "base.html" %}
+
+{% block title %}{{ list_url }}{% endblock %}
+{% block header %}<a href="/list/show?list={{thread.list_url|urlencode}}">
     {{ thread.list_url }}
-</a></h1>
+</a>
+{% endblock header %}
+
+{% block content %}
 <h2>{{ thread.subject }}</h2>
+
 {% for message in messages %}
 <div class="message">
   <div class="sender"> {{ message.sender }} </div>
@@ -16,6 +17,4 @@
   <div class="body"> {{ message.body }} </div>
 </div>
 {% endfor %}
-</table>
-</body>
-</html>
+{% endblock content %}
