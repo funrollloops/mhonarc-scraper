@@ -26,3 +26,8 @@ class Thread(db.Model):
   subject = db.StringProperty(required=True)
   last_message_body = db.TextProperty()
   participants = db.StringListProperty()
+
+class UserThread(db.Model):
+  user = db.UserProperty(required=True)
+  thread_id = db.StringProperty(required=True)
+  last_viewed = db.DateTimeProperty(required=True)

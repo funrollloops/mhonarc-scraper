@@ -4,7 +4,7 @@ from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api.labs.taskqueue import Task
-from models import Message, List, Thread
+from models import Message, List, Thread, UserThread
 from email_loader import strip_tags
 from datetime import datetime, timedelta
 
@@ -172,10 +172,34 @@ class ShowList(webapp.RequestHandler):
         t.short_date = datetime.strftime(t.last_message_time, '%b %d')
       else:
         t.short_date = datetime.strftime(t.last_message_time, '%D')
+      t.read = False
       formatted_threads.append(t)
+
+    user = users.get_current_user()
+    if user:
+      def lookup():
+        if len(lookup_pool) == 0:
+          return
+        for ut in UserThread.all().filter('thread_id IN', lookup_pool):
+          last_viewed[ut.thread_id] = ut.last_viewed
+        del lookup_pool[:]
+
+      last_viewed = {} # maps from thread_ids to last viewed
+      lookup_pool = []
+      for t in formatted_threads:
+        lookup_pool.append(t.thread_id)
+        if len(lookup_pool) == 30:
+          lookup()
+      lookup()
+
+      for t in formatted_threads:
+        if t.thread_id in last_viewed:
+          if t.last_message_time <= last_viewed[t.thread_id]:
+            t.read = True
 
     render(self, 'view.html', list = list, threads = formatted_threads,
                               msg = msg)
+
 
 class CreateList(webapp.RequestHandler):
   def post(self):
@@ -249,9 +273,29 @@ class ShowThread(webapp.RequestHandler):
       formatted_messages.append(message)
     
     if len(formatted_messages) == 0:
-      render(self, 'error.html', msg = "No messages in this thread.")
-    else:
-      render(self, 'thread.html', thread=thread, messages=formatted_messages)
+      render(self, 'info.html', error_message = "No messages in this thread.")
+      return
+
+    user = users.get_current_user()
+    already_seen = None
+    if user:
+      # If user is logged in, mark these messages as viewed.
+      max_viewed = max(msg.date for msg in formatted_messages)
+      userthread = gql_limit1(UserThread, thread_id = thread_id, user = user)
+      if not userthread:
+        userthread = UserThread(user = user, thread_id = thread_id,
+                                last_viewed = max_viewed)
+      else:
+        already_seen = userthread.last_viewed
+        for message in formatted_messages:
+          if message.date <= already_seen:
+            message.read = True
+      userthread.last_viewed = max_viewed
+      userthread.put()
+
+
+    render(self, 'thread.html', thread=thread, already_seen=already_seen,
+           messages=formatted_messages)
 
 application = webapp.WSGIApplication([
                                       ('/', MainPage),

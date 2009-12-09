@@ -10,7 +10,7 @@
 {% block content %}
 <table class="threads">
   {% for thread in threads %}
-  <tr>
+  <tr class="{% if thread.read %}read{% else %}unread{% endif %}">
     <td class="participants">{{ thread.participants.0 }}</td>
     <td class="detail">
       <a href="/thread/show?thread={{thread.thread_id|urlencode}}">

@@ -41,6 +41,10 @@ h2 {
   padding-left: 1ex;
 }
 
+.threads .read {
+  background-color: #CCC;
+}
+
 .threads td:first-child {
   padding-left: 0;
 }
@@ -71,13 +75,17 @@ h2 {
 }
 
 .message {
-  margin-top: 0.5em;
-  padding: 0.5em;
-  border: solid 1px black;
-  border-radius: 5px;
   clear: both;
   max-width: 80ex;
-  margin: 0.5em auto;
+  margin: 0 auto;
+  margin-bottom: 0.5em;
+}
+
+.message .container {
+  padding: 0.5em;
+  border: solid 1px black;
+  border-radius: 0.5em;
+  background: white;
 }
 
 .message .sender {
@@ -103,6 +111,13 @@ h2 {
 
 .message .content_type {
   color: #CCCCFF;
+  display: none;
+}
+
+.messages .collapsed {
+  height: 2em;
+  overflow: hidden;
+  margin-bottom: -0.3em;
 }
 
 .footer {

@@ -9,12 +9,16 @@
 {% block content %}
 <h2>{{ thread.subject }}</h2>
 
+<div class="messages">
 {% for message in messages %}
-<div class="message">
+<div class="message {% if message.read %}read{% if not forloop.last %} collapsed{% endif %}{% else %}unread{% endif %}">
+<div class="container">
   <div class="sender"> {{ message.sender }} </div>
   <div class="to"> {{ message.to|join:", " }} </div>
   <div class="content_type"> {{ message.content_type }} </div>
   <div class="body"> {{ message.body }} </div>
 </div>
+</div>
 {% endfor %}
+</div>
 {% endblock content %}
