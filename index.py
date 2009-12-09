@@ -1,5 +1,5 @@
 import logging
-from google.appengine.api import users
+from google.appengine.api import users, urlfetch
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -7,6 +7,8 @@ from google.appengine.api.labs.taskqueue import Task
 from models import Message, List, Thread
 from email_loader import strip_tags
 from datetime import datetime, timedelta
+
+from StringIO import StringIO
 import re
 
 def gql_limit1(model,  **conditions):
@@ -32,10 +34,34 @@ def update_list(list, start_msg, limit = 10):
   thread_pool = {}
   message_pool = []
   new = 0
+  err = None
   for i in range(start_msg, start_msg + limit):
     url = "%s/msg%05i.html" % (list.list_url, i)
     logging.info("loading an email from url %s" % url)
-    result = email_loader.parser(urllib.urlopen(url))
+
+    # Try three times to fetch the URL
+    result = None
+    for attempt in range(3):
+      try:
+        result = urlfetch.fetch(url=url)
+        err = None
+        break
+      except urlfetch.DownloadError, msg:
+        err = msg
+        continue
+    if result is None: break
+
+    if result.status_code == 404:
+      # This message does not exist, so return messages collected so far.
+      break
+    elif result.status_code != 200:
+      err = 'Got status code %i while trying to fetch %s' % (result.status_code,
+                                                             url)
+      break
+
+    logging.info("got content: %s" % result.content)
+    result = email_loader.parser(StringIO(result.content))
+
     logging.info("got result: %s" % result)
     result['source_url'] = url
     result['list_msg_id'] = i
@@ -97,7 +123,7 @@ def update_list(list, start_msg, limit = 10):
     list.num_fetched_msg += new
     list.last_fetched_time = datetime.now()
     list.put()
-  return new
+  return new, err
 
 def schedule_list_update(list):
   Task(url = '/list/update', params = {'list' : list.list_url},
@@ -160,13 +186,17 @@ class CreateList(webapp.RequestHandler):
     list = List(list_url = list_url, num_fetched_msg = 0,
                 last_fetched_time = datetime.now())
 
-    if update_list(list, 0, 1) == 0:
-      render(self, 'error.html',
-      msg = "Unable to get any messages from url \"%s\"" % list_url)
-      return
-
-    schedule_list_update(list)
-    render(self, 'info.html', msg = 'List added; messages are being fetched.')
+    fetched, err = update_list(list, 0, 1)
+    if err:
+      render(self, 'info.html',
+             error_message =  "Error fetching messages: " + str(err))
+    elif fetched == 0:
+      err_msg = "Unable to get any messages from url \"%s\"" % list_url
+      render(self, 'info.html', error_message = err_msg)
+    else:
+      schedule_list_update(list)
+      render(self, 'info.html',
+             message='List added; messages are being fetched.')
     
 
 class UpdateList(webapp.RequestHandler):
@@ -177,16 +207,18 @@ class UpdateList(webapp.RequestHandler):
     except:
       n = 1
     if not list:
-      render(self, 'error.html', msg='unknown list')
+      render(self, 'info.html', error_message='unknown list')
       return
 
-    fetched = update_list(list, list.num_fetched_msg, limit = n)
-    if fetched > 0:
+    fetched, error = update_list(list, list.num_fetched_msg, limit = n)
+    if error:
+      render(self, 'info.html', error_message='Error: ' + str(error))
+    elif fetched > 0:
       render(self, 'info.html',
-             msg='%i message(s) added, update scheduled' % fetched)
+             message='%i message(s) added, update scheduled' % fetched)
       schedule_list_update(list)
     else:
-      render(self, 'info.html', msg='no messages added')
+      render(self, 'info.html', message='no messages added')
 
   def post(self):
     self.do()
