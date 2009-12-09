@@ -1,6 +1,8 @@
 body {
   font-family: "calibri" "helvetica" "verdana" sans-serif;
   font-weight: thin;
+  padding: 0;
+  margin: 0;
 }
 
 h1 {
@@ -20,6 +22,49 @@ h2 {
   font-weight: normal;
 }
 
+.nav {
+  overflow: hidden;
+  list-style: none;
+  font-size: 120%;
+  margin: 0;
+  padding: 0.25em .5em;
+  background: url(/static/top-gradient.png) repeat-x left center;
+}
+
+.nav li {
+  float: left;
+  display: inline;
+  margin: 0;
+  padding: 0;
+  padding-left: 20px;
+  background: no-repeat url(/static/top-sep.png) left center;
+  color: white;
+}
+
+.nav li:first-child {
+  padding-left: 0;
+  background: none;
+}
+
+.nav a {
+  color: white;
+  text-decoration: none;
+}
+
+.nav .login {
+  float: right;
+  white-space: nowrap;
+  background: none;
+}
+
+.nav li.login a:after { content: "]" }
+.nav li.login a:before { content: "[" }
+.nav li.login a { text-transform: lowercase; }
+
+body .content {
+  clear: both;
+}
+
 .threads {
   width: 100%;
   border: 0px;
@@ -32,6 +77,7 @@ h2 {
 
 .threads tr {
   max-height: 1em;
+  padding-left: 1em;
   overflow: hidden;
 }
 
@@ -41,12 +87,16 @@ h2 {
   padding-left: 1ex;
 }
 
-.threads .read {
-  background-color: #CCC;
+.threads tr:nth-child(even) {
+  background-color: #eee;
 }
 
 .threads td:first-child {
-  padding-left: 0;
+  padding-left: 2ex;
+}
+
+.threads td:last-child {
+  padding-right: 2ex;
 }
 
 .threads .participants {
@@ -58,6 +108,11 @@ h2 {
 }
 
 .threads .subject {
+  font-weight: bolder;
+}
+
+.threads .read .subject {
+  font-weight: inherit;
 }
 
 .threads .body {
@@ -65,7 +120,7 @@ h2 {
 }
 
 .threads .time {
-  width: 7ex;
+  width: 10ex;
   text-align: right;
 }
 
@@ -76,7 +131,7 @@ h2 {
 
 .message {
   clear: both;
-  max-width: 80ex;
+  max-width: 85ex;
   margin: 0 auto;
   margin-bottom: 0.5em;
 }

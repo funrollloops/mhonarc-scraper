@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}{{ list_url }}{% endblock %}
-{% block header %}<a href="/list/show?list={{thread.list_url|urlencode}}">
+{% block header %}
+  <a href="/list/show?list={{thread.list_url|urlencode}}">
     {{ thread.list_url }}
-</a>
+  </a>
 {% endblock header %}
 
 {% block content %}

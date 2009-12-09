@@ -6,26 +6,29 @@
   <script src="http://www.google.com/jsapi"></script>
 </head>
 <body>
-<div class="nav">
-<div class="login">
+<ul class="nav">
+<li class="home"><a href="/">MHonArc Scraper</a></li>
+<li class="header">{% block header %}{% endblock header %}</li>
+
+<li class="login">
 {% if user %}
 <span class="nickname">{{user.nickname}}</span>
 <a href="{{logout_url}}" class="logout">Logout</a>
 {% else %}
 <a href="{{login_url}}" class="login">Login</a>
 {% endif %}
-</div>
-</div>
+</li>
+</ul>
 
-
-<h1>{% block header %}MHonarc Scraper{% endblock header %}</h1>
 
 {% if message %}<div class='info'>{{message}}</div>{% endif %}
 {% if error_message %}<div class='error'>{{error_message}}</div>{% endif %}
 
+<div class='content'>
 {% block content %}
 <a href="javascript:history.go(-1)">Go back.</a>
 {% endblock content %}
+</div>
 
 <script>{% block script %}{% endblock script %}</script>
 </body>
