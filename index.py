@@ -130,7 +130,13 @@ def schedule_list_update(list):
        countdown = 1).add()
 
 def render(rh, path, **kw):
+  kw['user'] = users.get_current_user()
+  if kw['user']:
+    kw['logout_url'] = users.create_login_url(rh.request.uri)
+  else:
+    kw['login_url'] = users.create_login_url(rh.request.uri)
   rh.response.out.write(template.render(path, kw))
+
 
 class MainPage(webapp.RequestHandler):
   def get(self):

@@ -5,6 +5,18 @@
   <link rel="stylesheet" type="text/css" href="/static/style.css" />
 </head>
 <body>
+<div class="nav">
+<div class="login">
+{% if user %}
+<span class="nickname">{{user.nickname}}</span>
+<a href="{{logout_url}}" class="logout">Logout</a>
+{% else %}
+<a href="{{login_url}}" class="login">Login</a>
+{% endif %}
+</div>
+</div>
+
+
 <h1>{% block header %}MHonarc Scraper{% endblock header %}</h1>
 
 {% if message %}<div class='info'>{{message}}</div>{% endif %}
