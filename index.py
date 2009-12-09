@@ -178,8 +178,12 @@ class UpdateList(webapp.RequestHandler):
       n = 1
     if not list:
       render(self, 'error.html', msg='unknown list')
-    elif update_list(list, list.num_fetched_msg, limit = n) == 1:
-      render(self, 'info.html', msg='one message added, update scheduled')
+      return
+
+    fetched = update_list(list, list.num_fetched_msg, limit = n)
+    if fetched > 0:
+      render(self, 'info.html',
+             msg='%i message(s) added, update scheduled' % fetched)
       schedule_list_update(list)
     else:
       render(self, 'info.html', msg='no messages added')
