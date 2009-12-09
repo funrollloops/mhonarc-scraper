@@ -1,3 +1,4 @@
+import logging
 from google.appengine.api import users
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import template
@@ -26,15 +27,23 @@ def get_list_from_url(list_url):
 def update_list(list, start_msg, limit = 10):
   import email_loader
   import urllib
+  required_fields = ['date', 'message_id', 'subject', 'body', 'sender']
   thread_id_cache = {}
   thread_pool = {}
   message_pool = []
   new = 0
   for i in range(start_msg, start_msg + limit):
     url = "%s/msg%05i.html" % (list.list_url, i)
+    logging.info("loading an email from url %s" % url)
     result = email_loader.parser(urllib.urlopen(url))
+    logging.info("got result: %s" % result)
     result['source_url'] = url
     result['list_msg_id'] = i
+    if not all((field in result) for field in required_fields):
+      logging.error(
+        "failed to update list %s msg %i with url %s; got bad parse result %s"
+        % (list, i, url, result))
+      break
     result['date'] = datetime.strptime(' '.join(result['date'].split()[:-1]),
                                        '%a, %d %b %Y %H:%M:%S')
     # Determine thread_id
