@@ -143,6 +143,7 @@ class MainPage(webapp.RequestHandler):
     lists = List.all().order('-last_fetched_time')
     render(self, 'index.html', lists = lists)
 
+
 class ShowList(webapp.RequestHandler):
   def get(self):
     list, list_url = get_list_from_url(self.request.get('list'))
@@ -256,6 +257,7 @@ class UpdateList(webapp.RequestHandler):
   def get(self):
     self.do()
     
+
 class ShowThread(webapp.RequestHandler):
   def get(self):
     thread_id = self.request.get('thread')
